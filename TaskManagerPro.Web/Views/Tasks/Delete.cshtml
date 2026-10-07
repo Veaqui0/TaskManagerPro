@@ -1,0 +1,21 @@
+@model TaskManagerPro.Web.Models.TaskItem
+
+@{
+    ViewData["Title"] = "Eliminar tarea";
+}
+
+<h1 class="mb-4">Eliminar tarea</h1>
+
+<div class="alert alert-warning">¿Está seguro de que desea eliminar esta tarea?</div>
+
+<div class="card mb-3">
+    <div class="card-body">
+        <partial name="_TaskDetails" model="Model" />
+    </div>
+</div>
+
+<form asp-action="Delete">
+    <input type="hidden" asp-for="Id" />
+    <input type="submit" value="Eliminar" class="btn btn-danger" />
+    <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+</form>

@@ -1,0 +1,80 @@
+@model IEnumerable<TaskManagerPro.Web.Models.TaskItem>
+
+@{
+    ViewData["Title"] = "Listado de tareas";
+}
+
+<h1 class="mb-4">Listado de tareas</h1>
+
+<partial name="_Alert" />
+
+<form method="get" class="row g-2 mb-3">
+    <div class="col-md-3">
+        <input type="text" name="search" value="@ViewBag.CurrentSearch" class="form-control" placeholder="Buscar..." />
+    </div>
+    <div class="col-md-2">
+        <select name="state" class="form-select">
+            <option value="">Estado</option>
+            @foreach (var s in Enum.GetNames(typeof(TaskManagerPro.Web.Models.TaskState)))
+            {
+                <option value="@s" selected="@(ViewBag.CurrentState == s)">@s</option>
+            }
+        </select>
+    </div>
+    <div class="col-md-2">
+        <select name="priority" class="form-select">
+            <option value="">Prioridad</option>
+            @foreach (var p in Enum.GetNames(typeof(TaskManagerPro.Web.Models.Priority)))
+            {
+                <option value="@p" selected="@(ViewBag.CurrentPriority == p)">@p</option>
+            }
+        </select>
+    </div>
+    <div class="col-md-3">
+        <select name="categoryId" class="form-select" asp-items="ViewBag.Categories">
+            <option value="">Todas las categorías</option>
+        </select>
+    </div>
+    <div class="col-md-2">
+        <button type="submit" class="btn btn-primary w-100">Filtrar</button>
+    </div>
+</form>
+
+<div class="mb-3">
+    <a asp-action="Create" class="btn btn-primary">Nueva tarea</a>
+    <a asp-controller="Dashboard" asp-action="Index" class="btn btn-outline-success">Ver dashboard</a>
+</div>
+
+<partial name="_TaskTable" model="Model" />
+
+<div class="modal fade" id="detailsModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Detalles de la tarea</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body" id="detailsContent">
+                <div class="text-center py-4"><div class="spinner-border text-primary"></div></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(function () {
+            $('.btn-details').on('click', function () {
+                var id = $(this).data('id');
+                var modal = new bootstrap.Modal(document.getElementById('detailsModal'));
+                $('#detailsContent').html('<div class="text-center py-4"><div class="spinner-border text-primary"></div></div>');
+                modal.show();
+                $.get('@Url.Action("DetailsPartial", "Tasks")/' + id, function (html) {
+                    $('#detailsContent').html(html);
+                }).fail(function () {
+                    $('#detailsContent').html('<div class="alert alert-danger">No se pudieron cargar los detalles.</div>');
+                });
+            });
+        });
+    </script>
+}

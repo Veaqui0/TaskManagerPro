@@ -1,0 +1,15 @@
+@model TaskManagerPro.Web.Models.TaskItem
+@{ ViewData["Title"] = "Nueva tarea"; }
+<h1 class="mb-4">Nueva tarea</h1>
+<div class="row">
+    <div class="col-md-10">
+        <form asp-action="Create">
+            <partial name="_TaskForm" model="Model" />
+            <div class="mt-3">
+                <input type="submit" value="Guardar" class="btn btn-primary" />
+                <a asp-action="Index" class="btn btn-secondary">Volver</a>
+            </div>
+        </form>
+    </div>
+</div>
+@section Scripts { @{await Html.RenderPartialAsync("_ValidationScriptsPartial");} }

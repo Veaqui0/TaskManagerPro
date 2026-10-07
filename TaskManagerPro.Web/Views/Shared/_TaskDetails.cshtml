@@ -1,0 +1,24 @@
+@model TaskManagerPro.Web.Models.TaskItem
+
+<dl class="row mb-0">
+    <dt class="col-sm-4">@Html.DisplayNameFor(m => m.Title)</dt>
+    <dd class="col-sm-8">@Html.DisplayFor(m => m.Title)</dd>
+
+    <dt class="col-sm-4">@Html.DisplayNameFor(m => m.Description)</dt>
+    <dd class="col-sm-8">@Html.DisplayFor(m => m.Description)</dd>
+
+    <dt class="col-sm-4">@Html.DisplayNameFor(m => m.Category)</dt>
+    <dd class="col-sm-8">@Html.DisplayFor(m => m.Category!.Name)</dd>
+
+    <dt class="col-sm-4">@Html.DisplayNameFor(m => m.DueDate)</dt>
+    <dd class="col-sm-8">@(Model.DueDate?.ToString("dd/MM/yyyy") ?? "—")</dd>
+
+    <dt class="col-sm-4">@Html.DisplayNameFor(m => m.Priority)</dt>
+    <dd class="col-sm-8">@Model.GetPriorityLabel()</dd>
+
+    <dt class="col-sm-4">@Html.DisplayNameFor(m => m.State)</dt>
+    <dd class="col-sm-8">@Model.State</dd>
+
+    <dt class="col-sm-4">Vencida</dt>
+    <dd class="col-sm-8">@(Model.IsOverdue() ? "Sí" : "No")</dd>
+</dl>
