@@ -1,0 +1,99 @@
+@model TaskManagerPro.Web.Models.ViewModels.DashboardViewModel
+
+@{
+    ViewData["Title"] = "Dashboard de tareas";
+}
+
+<h1 class="mb-4">Dashboard de tareas</h1>
+
+<div class="mb-3">
+    <a asp-controller="Tasks" asp-action="Index" class="btn btn-secondary">Volver al listado</a>
+    <a asp-controller="Tasks" asp-action="Create" class="btn btn-primary">Nueva tarea</a>
+</div>
+
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card text-bg-primary mb-3">
+            <div class="card-body">
+                <h5 class="card-title">Total de tareas</h5>
+                <p class="card-text fs-2">@Model.TotalTasks</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-bg-success mb-3">
+            <div class="card-body">
+                <h5 class="card-title">Completadas</h5>
+                <p class="card-text fs-2">@Model.CompletedTasks</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-bg-warning mb-3">
+            <div class="card-body">
+                <h5 class="card-title">Pendientes</h5>
+                <p class="card-text fs-2">@Model.PendingTasks</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card text-bg-danger mb-3">
+            <div class="card-body">
+                <h5 class="card-title">Vencidas</h5>
+                <p class="card-text fs-2">@Model.OverdueTasks</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card mb-4">
+            <div class="card-header">Tareas por categoría</div>
+            <div class="card-body">
+                <div id="barChart" style="height: 300px;"></div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="card mb-4">
+            <div class="card-header">Tareas por prioridad</div>
+            <div class="card-body">
+                <div id="donutChart" style="height: 300px;"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.css" />
+}
+
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.3.0/raphael.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.min.js"></script>
+    <script>
+        $(function () {
+            var categoryData = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.TasksByCategory));
+            var priorityData = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.TasksByPriority));
+
+            Morris.Bar({
+                element: 'barChart',
+                data: categoryData.map(function (d) { return { y: d.Label, a: d.Value }; }),
+                xkey: 'y',
+                ykeys: ['a'],
+                labels: ['Tareas'],
+                barColors: ['#0d6efd'],
+                hideHover: 'auto',
+                resize: true
+            });
+
+            Morris.Donut({
+                element: 'donutChart',
+                data: priorityData.map(function (d) { return { label: d.Label, value: d.Value }; }),
+                colors: ['#6c757d', '#ffc107', '#dc3545', '#0d6efd'],
+                resize: true
+            });
+        });
+    </script>
+}
